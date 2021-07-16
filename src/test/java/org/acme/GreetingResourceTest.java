@@ -64,16 +64,19 @@ public class GreetingResourceTest {
         jim.persist();
 
         Company redhat = new Company();
+        redhat.companyName = "redhat";
         redhat.addUser(max);
         redhat.addUser(jim);
-        
+        redhat.persist();
+
         assert(max.companies.contains(redhat));
         assert(jim.companies.contains(redhat));
 
         //https://stackoverflow.com/questions/36293898/hql-many-to-many-query
         var result = Company.find("from User u join u.companies c where c.companyName = 'redhat'");
         assertEquals(2, result.stream().count());
-        assertEquals(result.firstResult(), redhat);
+        assert(result.firstResult() == jim || result.firstResult() == max);
+
 
     }
 
