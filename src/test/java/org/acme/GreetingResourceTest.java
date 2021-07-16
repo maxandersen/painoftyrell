@@ -24,6 +24,7 @@ public class GreetingResourceTest {
     }
 
     @Test
+    @Transactional
     public void testPersistence() {
 
         User u = new User();
