@@ -25,13 +25,27 @@ public class GreetingResourceTest {
 
     @Test
     @Transactional
-    public void testPersistence() {
+    public void testUser() {
 
         User u = new User();
         u.persist();
 
         var users = User.findAll();
         assertEquals(users.count(), 1);
+
+    }
+
+    @Test
+    @Transactional
+    public void testCompany() {
+        var companies = Company.findAll();
+        assertEquals(companies.count(), 0);
+
+        Company c = new Company();
+        c.persist();
+
+        companies = Company.findAll();
+        assertEquals(companies.count(), 1);
 
     }
 }
