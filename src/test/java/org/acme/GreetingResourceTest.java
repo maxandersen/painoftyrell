@@ -1,5 +1,7 @@
 package org.acme;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
@@ -48,4 +50,31 @@ public class GreetingResourceTest {
         assertEquals(companies.count(), 1);
 
     }
+
+    @Test
+    @Transactional
+    public void testManyToMany() {
+
+        User max = new User();
+        max.name = "Max";
+        max.persist();
+
+        User jim = new User();
+        jim.name = "Jim";
+        jim.persist();
+
+        Company redhat = new Company();
+        redhat.addUser(max);
+        redhat.addUser(jim);
+        
+        assert(max.companies.contains(redhat));
+        assert(jim.companies.contains(redhat));
+
+        //https://stackoverflow.com/questions/36293898/hql-many-to-many-query
+        var result = Company.find("from User u join u.companies c where c.companyName = 'redhat'");
+        assertEquals(2, result.stream().count());
+        assertEquals(result.firstResult(), redhat);
+
+    }
+
 }
